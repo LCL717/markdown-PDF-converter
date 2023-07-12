@@ -1,0 +1,15 @@
+{
+  "name": "markdown-pdf-converter",
+  "version": "1.0.0",
+  "description": "markdown PDF converter with latex",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "markdown-pdf": "^11.0.0"
+  }
+}
