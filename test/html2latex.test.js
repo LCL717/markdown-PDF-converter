@@ -38,8 +38,8 @@ fs.readdir(testDir, (err, files) => {
 
             for (let i = 0; i < expectedLines.length; i++) {
               if (outputLines[i] !== expectedLines[i]) {
-                console.error(`Line ${i + 1} - Expected: ${expectedLines[i]}`);
-                console.error(`          - Output  : ${outputLines[i]}`);
+                console.error(`Line ${i + 1} \t- Expected: ${expectedLines[i]}`);
+                console.error(`\t- Output  : ${outputLines[i]}\n`);
                 diffFound = true;
               }
             }

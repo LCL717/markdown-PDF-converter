@@ -18,6 +18,7 @@ function convertToTex(inputFilePath) {
 \\usepackage[top=2cm, bottom=2cm, left=1cm, right=1cm]{geometry}
 \\usepackage{amsmath}
 \\usepackage{array}
+\\usepackage{graphicx}
 \\begin{document}
 ${tex}
 \\end{document}`;

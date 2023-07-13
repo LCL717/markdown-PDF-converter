@@ -36,7 +36,11 @@ class HTMLParser {
       } else if (tag === 'H3') {
         latex += this.__convertHeadingToLatex(content, 'subsubsection');
       } else if (tag === 'P') {
-        latex += this.__convertParagraphToLatex(content);
+        if (typeof children === 'undefined'){
+          latex += this.__convertParagraphToLatex(content);
+        } else {
+          latex += this.__convertImgToLatex(content, children);
+        }
       } else if (tag === 'UL') {
         latex += this.__convertListToLatex(children);
       } else if (tag === 'TABLE') {
@@ -48,6 +52,22 @@ class HTMLParser {
     });
 
     return latex;
+  }
+
+  __convertImgToLatex(content, children){
+    let latex = '';
+    if (children[0].tag === 'IMG') {
+      const regex = /<img\s+src="([^"]+)"\s+alt="([^"]+)">/i;
+      const match = regex.exec(content);
+      const src = match[1];
+      const alt = match[2];
+      latex += '\\begin{figure}[htbp]\n\\centering\n\\resizebox{0.5\\textwidth}{!}{%\n\\includegraphics{';
+      latex += src;
+      latex += '}}\n\\caption{'
+      latex += alt
+      latex += '}\n\\end{figure}\n';
+    }
+    return latex
   }
 
   __convertListToLatex(children) {
