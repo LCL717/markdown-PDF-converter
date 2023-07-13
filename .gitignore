@@ -3,9 +3,9 @@
 *.pdf
 .vscode
 *.log
-/.DS_Store
 *.html
 *.tex
 *.aux
 !test/testCases/*.html
 !test/testCases/*.tex
+**/.DS_Store
