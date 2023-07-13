@@ -2,8 +2,10 @@
 *.md
 *.pdf
 .vscode
-*.tex
 *.log
 /.DS_Store
 *.html
+*.tex
 *.aux
+!test/testCases/*.html
+!test/testCases/*.tex

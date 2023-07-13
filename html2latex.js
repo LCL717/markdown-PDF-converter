@@ -20,7 +20,6 @@ class HTMLParser {
         tags.push({ tag, content });
       }
     });
-    console.log(tags);
     return tags;
   }
 
@@ -79,12 +78,11 @@ class HTMLParser {
       }
     });
   
-    return latex + '\\end{tabular}\n\\end{table}';
+    return latex + '\\end{tabular}\n\\end{table}\n';
   }
 
   __parseTableHeader(header) {
     let latex = '';
-    console.log(header)
     header.children.forEach((cell) => {
       latex += 'c|';
     });
@@ -125,7 +123,7 @@ class HTMLParser {
   }
 
   __convertParagraphToLatex(content) {
-    return `${content}\n\n`;
+    return `${content}\n`;
   }
 
   async html2latex(html) {

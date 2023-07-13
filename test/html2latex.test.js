@@ -1,44 +1,59 @@
+const fs = require('fs');
+const path = require('path');
 const html2latex = require('../html2latex');
 
 const parser = new html2latex();
 
-const testCases = [
-  {
-    html: '<h1>Title</h1><h2>Title</h2><h3>Title</h3>',
-    expected: '\\section*{Title}\n\\subsection*{Title}\n\\subsubsection*{Title}\n'
-  },
-  {
-    html: '<ul><li>Item 1</li><li>Item 2</li></ul>',
-    expected: '\\begin{itemize}\n\\item Item 1\n\\item Item 2\n\\end{itemize}\n'
-  },
-  {
-    html: '<table><thead><tr><th>Name</th><th>Age</th></tr></thead><tbody><tr><td>John</td><th>12</th></tr><tr><td>Alice</td><th>22</th></tr></tbody></table>',
-    expected: '\\begin{itemize}\n\\item Item 1\n\\item Item 2\n\\end{itemize}\n'
-  },
-];
+const testDir = 'test/testCases';
 
-testCases.forEach(async (testCase, index) => {
-  console.log(`Running test case ${index + 1}`);
-
-  const { html, expected } = testCase;
-
-  console.log('Input HTML:');
-  console.log(html);
-
-  console.log('Expected LaTeX:');
-  console.log(expected);
-
-  console.log('Output LaTeX:');
-  try {
-    const output = await parser.html2latex(html);
-    console.log(output);
-
-    if (output === expected) {
-      console.log('Test case passed!\n');
-    } else {
-      console.error('Test case failed!\n');
-    }
-  } catch (error) {
-    console.error('Test case failed with error:', error);
+fs.readdir(testDir, (err, files) => {
+  if (err) {
+    console.error('Error reading test cases directory:', err);
+    return;
   }
+
+  files.forEach((file) => {
+    if (path.extname(file) === '.html') {
+      const htmlPath = path.join(testDir, file);
+      const texPath = path.join(testDir, file.replace('.html', '.tex'));
+
+      fs.readFile(htmlPath, 'utf8', async (err, htmlContent) => {
+        if (err) {
+          console.error(`Error reading HTML file ${htmlPath}:`, err);
+          return;
+        }
+
+        try {
+          const expectedTexContent = await fs.promises.readFile(texPath, 'utf8');
+
+          console.log(`Running test case ${file}`);
+
+          try {
+            const output = await parser.html2latex(htmlContent);
+
+            const outputLines = output.split('\n');
+            const expectedLines = expectedTexContent.split('\n');
+
+            let diffFound = false;
+
+            for (let i = 0; i < expectedLines.length; i++) {
+              if (outputLines[i] !== expectedLines[i]) {
+                console.error(`Line ${i + 1} - Expected: ${expectedLines[i]}`);
+                console.error(`          - Output  : ${outputLines[i]}`);
+                diffFound = true;
+              }
+            }
+
+            if (!diffFound) {
+              console.log('Test case passed!\n');
+            }
+          } catch (error) {
+            console.error('Test case failed with error:', error);
+          }
+        } catch (error) {
+          console.error(`Error reading LaTeX file ${texPath}:`, error);
+        }
+      });
+    }
+  });
 });
