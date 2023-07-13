@@ -11,6 +11,10 @@ const testCases = [
     html: '<ul><li>Item 1</li><li>Item 2</li></ul>',
     expected: '\\begin{itemize}\n\\item Item 1\n\\item Item 2\n\\end{itemize}\n'
   },
+  {
+    html: '<table><thead><tr><th>Name</th><th>Age</th></tr></thead><tbody><tr><td>John</td><th>12</th></tr><tr><td>Alice</td><th>22</th></tr></tbody></table>',
+    expected: '\\begin{itemize}\n\\item Item 1\n\\item Item 2\n\\end{itemize}\n'
+  },
 ];
 
 testCases.forEach(async (testCase, index) => {

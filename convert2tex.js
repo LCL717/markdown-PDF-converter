@@ -17,6 +17,7 @@ function convertToTex(inputFilePath) {
       let texContent = `\\documentclass[10pt]{article}
 \\usepackage[top=2cm, bottom=2cm, left=1cm, right=1cm]{geometry}
 \\usepackage{amsmath}
+\\usepackage{array}
 \\begin{document}
 ${tex}
 \\end{document}`;
