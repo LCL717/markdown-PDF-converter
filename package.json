@@ -4,12 +4,15 @@
   "description": "markdown PDF converter with latex",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "markdown-pdf": "^11.0.0"
+    "chai": "^4.3.7",
+    "html-to-latex": "^0.8.0",
+    "markdown-it": "^13.0.1",
+    "markdown-it-mathjax": "^2.0.0"
   }
 }

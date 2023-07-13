@@ -2,3 +2,6 @@
 *.md
 *.pdf
 .vscode
+*.tex
+*.log
+/.DS_Store
