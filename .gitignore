@@ -5,3 +5,5 @@
 *.tex
 *.log
 /.DS_Store
+*.html
+*.aux

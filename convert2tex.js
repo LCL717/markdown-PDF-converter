@@ -17,13 +17,12 @@ function convertToTex(inputFilePath) {
       let texContent = `\\documentclass[10pt]{article}
 \\usepackage[top=2cm, bottom=2cm, left=1cm, right=1cm]{geometry}
 \\usepackage{amsmath}
-
-
 \\begin{document}
 ${tex}
 \\end{document}`;
 
       fs.writeFileSync(outputFilePath, texContent, 'utf8');
+      fs.writeFileSync('m.html', html, 'utf8');
       return outputFilePath;
     })
     .catch(error => {
