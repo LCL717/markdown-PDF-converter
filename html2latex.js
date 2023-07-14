@@ -61,14 +61,15 @@ class HTMLParser {
     if (children[0].tag === 'IMG') {
       latex = this.__convertImgToLatex(content);
     } else {
-      latex = this.__convertStyleToLatex(content);
+      latex = this.__convertComplexPToLatex(content);
     }
     return latex
   }
 
-  __convertStyleToLatex(content){
+  __convertComplexPToLatex(content){
     content = content.replace(/<strong>(.*?)<\/strong>/g, "\\textbf{$1}");
     content = content.replace(/<em>(.*?)<\/em>/g, "\\textit{$1}");
+    content = content.replace(/<a href="(.*?)">(.*?)<\/a>/g, '\\href{$1}{$2}');
     return content + '\n'
   }
 

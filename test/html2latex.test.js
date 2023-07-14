@@ -5,12 +5,19 @@ const html2latex = require('../html2latex');
 const parser = new html2latex();
 
 const testDir = 'test/testCases';
+const testCases = [];
+let passedCases = 0;
+let failedCases = 0;
+let processedFiles = 0;
+const failedTestCases = [];
 
 fs.readdir(testDir, (err, files) => {
   if (err) {
     console.error('Error reading test cases directory:', err);
     return;
   }
+
+  const totalCases = files.filter((file) => path.extname(file) === '.html').length;
 
   files.forEach((file) => {
     if (path.extname(file) === '.html') {
@@ -46,12 +53,41 @@ fs.readdir(testDir, (err, files) => {
 
             if (!diffFound) {
               console.log('Test case passed!\n');
+              passedCases++;
+            } else {
+              failedCases++;
+              failedTestCases.push(file);
             }
           } catch (error) {
             console.error('Test case failed with error:', error);
+            failedCases++;
+            failedTestCases.push(file);
           }
         } catch (error) {
           console.error(`Error reading LaTeX file ${texPath}:`, error);
+          failedCases++;
+          failedTestCases.push(file);
+        }
+
+        testCases.push(file);
+        processedFiles++;
+
+        if (processedFiles === totalCases) {
+          const passRate = (passedCases / totalCases) * 100;
+
+          console.log(`\nSummary`);
+          console.log(`-------`);
+          console.log(`Total test cases: ${totalCases}`);
+          console.log(`Passed test cases: ${passedCases}`);
+          console.log(`Failed test cases: ${failedCases}`);
+          console.log(`Pass Rate: ${passRate.toFixed(2)}%\n`);
+
+          if (failedTestCases.length > 0) {
+            console.log('Failed test cases:');
+            failedTestCases.forEach((testCase) => {
+              console.log(testCase);
+            });
+          }
         }
       });
     }
