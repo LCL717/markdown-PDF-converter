@@ -4,7 +4,8 @@ const path = require('path');
 
 function convertToPdf(texFilePath) {
   return new Promise((resolve, reject) => {
-    const command = `pdflatex ${texFilePath}`;
+    const texFileDir = path.dirname(texFilePath);
+    const command = `pdflatex -output-directory=${texFileDir} ${texFilePath}`;
     exec(command, (error, stdout, stderr) => {
       if (error) {
         reject(error);
@@ -20,6 +21,7 @@ function deleteTexFile(texFilePath) {
   const fileBaseName = path.basename(texFilePath, path.extname(texFilePath));
   const logFilePath = path.join(fileDir, `${fileBaseName}.log`);
   const auxFilePath = path.join(fileDir, `${fileBaseName}.aux`);
+  const outFilePath = path.join(fileDir, `${fileBaseName}.out`);
   fs.unlink(texFilePath, error => {
     if (error) {
       console.error('Error deleting TeX file:', error);
@@ -35,6 +37,12 @@ function deleteTexFile(texFilePath) {
   fs.unlink(auxFilePath, error => {
     if (error) {
       console.error('Error deleting aux file:', error);
+    }
+  });
+
+  fs.unlink(outFilePath, error => {
+    if (error) {
+      console.error('Error deleting out file:', error);
     }
   });
 }

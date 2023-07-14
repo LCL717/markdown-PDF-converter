@@ -21,7 +21,6 @@ class HTMLParser {
         tags.push({ tag, content, class: className });
       }
     });
-    console.log(tags)
     return tags;
   }
 
@@ -53,6 +52,7 @@ class HTMLParser {
         latex += this.__convertCodeToLatex(children);
       } else if (tag === 'BLOCKQUOTE') {
         latex += this.__convertQuoteToLatex(children);
+        children.splice(0, children.length);
       } else if (tag === 'HR') {
         latex += this.__convertHRToLatex();
       }
@@ -115,7 +115,7 @@ class HTMLParser {
     const match = regex.exec(content);
     const src = match[1];
     const alt = match[2];
-    latex += '\\begin{figure}[htbp]\n\\centering\n\\resizebox{0.5\\textwidth}{!}{%\n\\includegraphics{';
+    latex += '\\begin{figure}[h]\n\\centering\n\\resizebox{0.3\\textwidth}{!}{%\n\\includegraphics{';
     latex += src;
     latex += '}}\n\\caption{'
     latex += alt
@@ -200,11 +200,28 @@ class HTMLParser {
   }
 
   __convertHeadingToLatex(content, headingType) {
-    return `\\${headingType}*{${content}}\n`;
+    return `\\${headingType}*{${content}}\n\n`;
   }
 
   __convertParagraphToLatex(content) {
     return `${content}\n\n`;
+  }
+
+  __addHeaderAndFooter(latex) {
+    const header = `\\documentclass[10pt]{article}
+\\usepackage[top=2cm, bottom=2cm, left=1cm, right=1cm]{geometry}
+\\usepackage{amsmath}
+\\usepackage{array}
+\\usepackage{graphicx}
+\\usepackage{listings}
+\\usepackage{ulem}
+\\usepackage{hyperref}
+\\setlength{\\parindent}{0pt}
+\\begin{document}\n`;
+  
+    const footer = '\\end{document}';
+  
+    return `${header}\n${latex}\n${footer}`;
   }
 
   async html2latex(html) {
@@ -213,7 +230,8 @@ class HTMLParser {
       const rootElement = this.$('body').children();
       const parsedTags = this.__parseTags(this.$, rootElement);
       const parsedLatex = this.__convertToLatex(parsedTags);
-      return parsedLatex;
+      const finalLatex = this.__addHeaderAndFooter(parsedLatex);
+      return finalLatex;
     } catch (error) {
       throw error;
     }

@@ -8,4 +8,6 @@
 *.aux
 !test/testCases/*.html
 !test/testCases/*.tex
+!test/*.md
+!test/*.pdf
 **/.DS_Store

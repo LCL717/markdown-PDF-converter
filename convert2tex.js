@@ -1,6 +1,9 @@
 const fs = require('fs');
 const path = require('path');
 const { convertText } = require('html-to-latex');
+const html2latex = require('./html2latex');
+
+const parser = new html2latex();
 const md = require('markdown-it')().use(require('markdown-it-mathjax')());
 
 function convertToTex(inputFilePath) {
@@ -9,22 +12,9 @@ function convertToTex(inputFilePath) {
   const inputFileName = path.basename(inputFilePath, path.extname(inputFilePath));
 
   const html = md.render(inputContent);
-
-  return convertText(html)
-    .then(tex => {
+  return parser.html2latex(html)
+    .then(texContent => {
       const outputFilePath = path.join(inputDir, `${inputFileName}.tex`);
-
-      let texContent = `\\documentclass[10pt]{article}
-\\usepackage[top=2cm, bottom=2cm, left=1cm, right=1cm]{geometry}
-\\usepackage{amsmath}
-\\usepackage{array}
-\\usepackage{graphicx}
-\\usepackage{listings}
-\\usepackage{ulem}
-\\begin{document}
-${tex}
-\\end{document}`;
-
       fs.writeFileSync(outputFilePath, texContent, 'utf8');
       fs.writeFileSync('m.html', html, 'utf8');
       return outputFilePath;
