@@ -97,6 +97,7 @@ class HTMLParser {
     content = content.replace(/<strong>(.*?)<\/strong>/g, "\\textbf{$1}");
     content = content.replace(/<em>(.*?)<\/em>/g, "\\textit{$1}");
     content = content.replace(/<a href="(.*?)">(.*?)<\/a>/g, '\\href{$1}{$2}');
+    content = content.replace(/<code>(.*?)<\/code>/g, '\\verb|$1|');
     return content + '\n'
   }
 
