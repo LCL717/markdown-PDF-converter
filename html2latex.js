@@ -49,7 +49,9 @@ class HTMLParser {
       } else if (tag === 'TABLE') {
         latex += this.__convertTableToLatex(children);
       } else if (tag === 'PRE') {
-        latex += this.__convertCodeToLatex(children, className);
+        latex += this.__convertCodeToLatex(children);
+      } else if (tag === 'BLOCKQUOTE') {
+        latex += this.__convertQuoteToLatex(children);
       }
       if (children && children.length > 0) {
         latex += this.__convertToLatex(children);
@@ -59,7 +61,15 @@ class HTMLParser {
     return latex;
   }
 
-  __convertCodeToLatex(children, className){
+  __convertQuoteToLatex(children){
+    let latex = '';
+    latex += '\\begin{quote}\n\\small\\itshape ';
+    latex += this.__convertToLatex(children);
+    latex += '\n\\end{quote}\n\n'
+    return latex
+  }
+
+  __convertCodeToLatex(children){
     let latex = '';
     if(children[0].tag === 'CODE'){
       latex = '\\lstset{\nbasicstyle=\\ttfamily\\small,'
