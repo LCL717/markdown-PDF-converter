@@ -21,6 +21,7 @@ class HTMLParser {
         tags.push({ tag, content, class: className });
       }
     });
+    console.log(tags)
     return tags;
   }
 
@@ -52,6 +53,8 @@ class HTMLParser {
         latex += this.__convertCodeToLatex(children);
       } else if (tag === 'BLOCKQUOTE') {
         latex += this.__convertQuoteToLatex(children);
+      } else if (tag === 'HR') {
+        latex += this.__convertHRToLatex();
       }
       if (children && children.length > 0) {
         latex += this.__convertToLatex(children);
@@ -59,6 +62,10 @@ class HTMLParser {
     });
 
     return latex;
+  }
+
+  __convertHRToLatex(){
+    return '\\rule{\\linewidth}{0.4pt}\n'
   }
 
   __convertQuoteToLatex(children){
@@ -94,11 +101,11 @@ class HTMLParser {
   }
 
   __convertComplexPToLatex(content){
-    content = content.replace(/<strong>(.*?)<\/strong>/g, "\\textbf{$1}");
-    content = content.replace(/<em>(.*?)<\/em>/g, "\\textit{$1}");
-    content = content.replace(/<a href="(.*?)">(.*?)<\/a>/g, '\\href{$1}{$2}');
-    content = content.replace(/<code>(.*?)<\/code>/g, '\\verb|$1|');
-    content = content.replace(/<s>(.*?)<\/s>/g, '\\sout{$1}');
+    content = content.replace(/<strong>(.*?)<\/strong>/g, "\\textbf{$1}"); // bold
+    content = content.replace(/<em>(.*?)<\/em>/g, "\\textit{$1}"); // it
+    content = content.replace(/<a href="(.*?)">(.*?)<\/a>/g, '\\href{$1}{$2}'); // link
+    content = content.replace(/<code>(.*?)<\/code>/g, '\\verb|$1|'); // inline code
+    content = content.replace(/<s>(.*?)<\/s>/g, '\\sout{$1}'); // delete
     return content + '\n\n'
   }
 
