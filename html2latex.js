@@ -39,7 +39,7 @@ class HTMLParser {
         if (typeof children === 'undefined'){
           latex += this.__convertParagraphToLatex(content);
         } else {
-          latex += this.__convertImgToLatex(content, children);
+          latex += this.__convertComplexPassageToLatex(content, children);
         }
       } else if (tag === 'UL') {
         latex += this.__convertListToLatex(children);
@@ -54,19 +54,33 @@ class HTMLParser {
     return latex;
   }
 
-  __convertImgToLatex(content, children){
+  __convertComplexPassageToLatex(content, children){
     let latex = '';
     if (children[0].tag === 'IMG') {
-      const regex = /<img\s+src="([^"]+)"\s+alt="([^"]+)">/i;
-      const match = regex.exec(content);
-      const src = match[1];
-      const alt = match[2];
-      latex += '\\begin{figure}[htbp]\n\\centering\n\\resizebox{0.5\\textwidth}{!}{%\n\\includegraphics{';
-      latex += src;
-      latex += '}}\n\\caption{'
-      latex += alt
-      latex += '}\n\\end{figure}\n';
+      latex = this.__convertImgToLatex(content);
+    } else {
+      latex = this.__convertStyleToLatex(content);
     }
+    return latex
+  }
+
+  __convertStyleToLatex(content){
+    content = content.replace(/<strong>(.*?)<\/strong>/g, "\\textbf{$1}");
+    content = content.replace(/<em>(.*?)<\/em>/g, "\\textit{$1}");
+    return content + '\n'
+  }
+
+  __convertImgToLatex(content){
+    let latex = '';
+    const regex = /<img\s+src="([^"]+)"\s+alt="([^"]+)">/i;
+    const match = regex.exec(content);
+    const src = match[1];
+    const alt = match[2];
+    latex += '\\begin{figure}[htbp]\n\\centering\n\\resizebox{0.5\\textwidth}{!}{%\n\\includegraphics{';
+    latex += src;
+    latex += '}}\n\\caption{'
+    latex += alt
+    latex += '}\n\\end{figure}\n';
     return latex
   }
 
