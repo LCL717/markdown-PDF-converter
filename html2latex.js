@@ -98,7 +98,8 @@ class HTMLParser {
     content = content.replace(/<em>(.*?)<\/em>/g, "\\textit{$1}");
     content = content.replace(/<a href="(.*?)">(.*?)<\/a>/g, '\\href{$1}{$2}');
     content = content.replace(/<code>(.*?)<\/code>/g, '\\verb|$1|');
-    return content + '\n'
+    content = content.replace(/<s>(.*?)<\/s>/g, '\\sout{$1}');
+    return content + '\n\n'
   }
 
   __convertImgToLatex(content){
@@ -196,7 +197,7 @@ class HTMLParser {
   }
 
   __convertParagraphToLatex(content) {
-    return `${content}\n`;
+    return `${content}\n\n`;
   }
 
   async html2latex(html) {

@@ -20,6 +20,7 @@ function convertToTex(inputFilePath) {
 \\usepackage{array}
 \\usepackage{graphicx}
 \\usepackage{listings}
+\\usepackage{ulem}
 \\begin{document}
 ${tex}
 \\end{document}`;
