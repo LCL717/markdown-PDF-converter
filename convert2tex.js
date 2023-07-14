@@ -19,6 +19,7 @@ function convertToTex(inputFilePath) {
 \\usepackage{amsmath}
 \\usepackage{array}
 \\usepackage{graphicx}
+\\usepackage{listings}
 \\begin{document}
 ${tex}
 \\end{document}`;

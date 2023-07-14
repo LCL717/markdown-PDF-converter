@@ -12,12 +12,13 @@ class HTMLParser {
       const tag = $(element).prop('tagName');
       const content = $(element).html();
       const children = $(element).children();
+      const className = $(element).attr('class');
 
       if (children.length > 0) {
         const nestedTags = this.__parseTags($, children);
-        tags.push({ tag, content, children: nestedTags });
+        tags.push({ tag, content, children: nestedTags, class: className });
       } else {
-        tags.push({ tag, content });
+        tags.push({ tag, content, class: className });
       }
     });
     return tags;
@@ -27,7 +28,7 @@ class HTMLParser {
     let latex = '';
 
     parsedTags.forEach((tagObj) => {
-      const { tag, content, children } = tagObj;
+      const { tag, content, children, class: className} = tagObj;
 
       if (tag === 'H1') {
         latex += this.__convertHeadingToLatex(content, 'section');
@@ -47,6 +48,8 @@ class HTMLParser {
         latex += this.__convertListToLatex(children, tag);
       } else if (tag === 'TABLE') {
         latex += this.__convertTableToLatex(children);
+      } else if (tag === 'PRE') {
+        latex += this.__convertCodeToLatex(children, className);
       }
       if (children && children.length > 0) {
         latex += this.__convertToLatex(children);
@@ -54,6 +57,20 @@ class HTMLParser {
     });
 
     return latex;
+  }
+
+  __convertCodeToLatex(children, className){
+    let latex = '';
+    if(children[0].tag === 'CODE'){
+      latex = '\\lstset{\nbasicstyle=\\ttfamily\\small,'
+      if(typeof children[0].class !== 'undefined'){
+        latex += '\nlanguage=' + children[0].class.replace("language-", "") + ','
+      }
+      latex += '\nxleftmargin=1cm}\n\\begin{lstlisting}\n\n'
+      latex += children[0].content;
+      latex += '\\end{lstlisting}\n'
+    }
+    return latex
   }
 
   __convertComplexPassageToLatex(content, children){
