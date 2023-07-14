@@ -42,7 +42,9 @@ class HTMLParser {
           latex += this.__convertComplexPassageToLatex(content, children);
         }
       } else if (tag === 'UL') {
-        latex += this.__convertListToLatex(children);
+        latex += this.__convertListToLatex(children, tag);
+      } else if (tag === 'OL') {
+        latex += this.__convertListToLatex(children, tag);
       } else if (tag === 'TABLE') {
         latex += this.__convertTableToLatex(children);
       }
@@ -84,8 +86,13 @@ class HTMLParser {
     return latex
   }
 
-  __convertListToLatex(children) {
-    let latex = '\\begin{itemize}\n';
+  __convertListToLatex(children, tag) {
+    let latex = '';
+    if( tag === 'UL' ){
+      latex = '\\begin{itemize}\n';
+    } else if(tag === 'OL'){
+      latex = '\\begin{enumerate}\n';
+    }
 
     children.forEach((child) => {
       latex += `\\item ${child.content}\n`;
@@ -94,8 +101,11 @@ class HTMLParser {
         latex += this.__convertToLatex(child.children);
       }
     });
-
-    latex += '\\end{itemize}\n';
+    if( tag === 'UL' ){
+      latex += '\\end{itemize}\n';
+    } else if(tag === 'OL'){
+      latex += '\\end{enumerate}\n';
+    }
 
     return latex;
   }
