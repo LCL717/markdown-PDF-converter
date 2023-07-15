@@ -1,6 +1,9 @@
 const { exec } = require('child_process');
 const fs = require('fs');
+const { removeSync } = require('fs-extra');
 const path = require('path');
+
+const imgpath = 'img'
 
 function convertToPdf(texFilePath) {
   return new Promise((resolve, reject) => {
@@ -17,6 +20,16 @@ function convertToPdf(texFilePath) {
 }
 
 function deleteTexFile(texFilePath) {
+  if (fs.existsSync(imgpath)) {
+    removeSync(imgpath);
+  }
+
+  fs.unlink(texFilePath, error => {
+    if (error) {
+      console.error('Error deleting TeX file:', error);
+    }
+  });
+  
   const fileDir = path.dirname(texFilePath);
   const fileBaseName = path.basename(texFilePath, path.extname(texFilePath));
   const logFilePath = path.join(fileDir, `${fileBaseName}.log`);

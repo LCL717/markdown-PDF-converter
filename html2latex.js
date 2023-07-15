@@ -1,4 +1,9 @@
 const cheerio = require('cheerio');
+const path = require('path');
+const axios = require('axios')
+const fs = require('fs');
+
+const imgpath = 'img'
 
 class HTMLParser {
   constructor() {
@@ -109,18 +114,42 @@ class HTMLParser {
     return content + '\n\n'
   }
 
-  __convertImgToLatex(content){
+  async __downloadImage(url, filePath) {
+    if (this.__isLocalPath(url)) {
+      await fs.copyFileSync(url, filePath);
+      return;
+    }
+    const response = await axios.get(url, { responseType: 'arraybuffer' });
+    fs.writeFileSync(filePath, response.data);
+  }
+
+  __isLocalPath(url) {
+    const isAbsolutePath = path.isAbsolute(url);
+    const isRelativePath = url.startsWith('./') || url.startsWith('../');
+    return isAbsolutePath || isRelativePath;
+  }
+  
+  __convertImgToLatex(content) {
     let latex = '';
     const regex = /<img\s+src="([^"]+)"\s+alt="([^"]+)">/i;
     const match = regex.exec(content);
     const src = match[1];
     const alt = match[2];
-    latex += '\\begin{figure}[h]\n\\centering\n\\resizebox{0.3\\textwidth}{!}{%\n\\includegraphics{';
-    latex += src;
+    const fileName = path.basename(src);
+    const localPath = path.join(imgpath, fileName);
+
+    if (!fs.existsSync(imgpath)) {
+      fs.mkdirSync(imgpath, { recursive: true });
+    }
+  
+    this.__downloadImage(src, localPath);
+  
+    latex += '\\begin{figure}[h]\n\\centering\n\\resizebox{0.6\\textwidth}{!}{%\n\\includegraphics{';
+    latex += localPath;
     latex += '}}\n\\caption{'
-    latex += alt
+    latex += alt;
     latex += '}\n\\end{figure}\n';
-    return latex
+    return latex;
   }
 
   __convertListToLatex(content, children, tag) {
