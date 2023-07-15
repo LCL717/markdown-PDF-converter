@@ -43,9 +43,7 @@ class HTMLParser {
         } else {
           latex += this.__convertComplexPassageToLatex(content, children);
         }
-      } else if (tag === 'UL') {
-        latex += this.__convertListToLatex(content, children, tag);
-      } else if (tag === 'OL') {
+      } else if (tag === 'UL' || tag === 'OL') {
         latex += this.__convertListToLatex(content, children, tag);
       } else if (tag === 'TABLE') {
         latex += this.__convertTableToLatex(children);
