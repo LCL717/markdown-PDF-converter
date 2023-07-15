@@ -1,8 +1,5 @@
-const path = require('path');
 const convertToTex = require('./convert2tex');
 const { convertToPdf, deleteTexFile } = require('./convert2pdf');
-const { test } = require('node:test');
-const { text } = require('stream/consumers');
 
 const inputFilePath = process.argv[2];
 
