@@ -46,3 +46,21 @@ this is a latex item $\theta$
 this is a latex formula 
 
 $$\theta = \frac{1}{2}$$
+
+this is line and enter
+
+124\
+456
+
+1
+
+haha
+haha
+
+quote link: [Google][1]
+
+- [x] complete
+- [ ] doing
+
+[1]: https://www.google.com
+

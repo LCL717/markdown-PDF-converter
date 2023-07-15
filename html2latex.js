@@ -37,6 +37,7 @@ class HTMLParser {
       } else if (tag === 'H3') {
         latex += this.__convertHeadingToLatex(content, 'subsubsection');
       } else if (tag === 'P') {
+        latex += '\\smallskip '
         if (typeof children === 'undefined'){
           latex += this.__convertParagraphToLatex(content);
         } else {
@@ -106,6 +107,7 @@ class HTMLParser {
     content = content.replace(/<a href="(.*?)">(.*?)<\/a>/g, '\\href{$1}{$2}'); // link
     content = content.replace(/<code>(.*?)<\/code>/g, '\\verb|$1|'); // inline code
     content = content.replace(/<s>(.*?)<\/s>/g, '\\sout{$1}'); // delete
+    content = content.replace(/<br>/g, "\n");
     return content + '\n\n'
   }
 
@@ -125,6 +127,7 @@ class HTMLParser {
 
   __convertListToLatex(children, tag) {
     let latex = '';
+    let content = '';
     if( tag === 'UL' ){
       latex = '\\begin{itemize}\n';
     } else if(tag === 'OL'){
@@ -132,7 +135,9 @@ class HTMLParser {
     }
 
     children.forEach((child) => {
-      latex += `\\item ${child.content}\n`;
+      content = child.content.replace().replace(/\[x\]/g, "[\\checkmark]");
+      content = content.replace(/\[ \]/g, "[$\\square$]");
+      latex += `\\item ${content}\n`;
 
       if (child.children && child.children.length > 0) {
         latex += this.__convertToLatex(child.children);
@@ -143,7 +148,6 @@ class HTMLParser {
     } else if(tag === 'OL'){
       latex += '\\end{enumerate}\n';
     }
-
     return latex;
   }
 
@@ -216,6 +220,7 @@ class HTMLParser {
 \\usepackage{listings}
 \\usepackage{ulem}
 \\usepackage{hyperref}
+\\usepackage{amssymb}
 \\setlength{\\parindent}{0pt}
 \\begin{document}\n`;
   

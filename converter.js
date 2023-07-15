@@ -11,7 +11,7 @@ convertToTex(inputFilePath)
     convertToPdf(texFilePath)
       .then(() => {
         console.log('Conversion complete.');
-        deleteTexFile(texFilePath);
+        //deleteTexFile(texFilePath);
       })
       .catch(error => {
         console.error('PDF conversion error:', error);
