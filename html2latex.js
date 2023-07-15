@@ -44,9 +44,9 @@ class HTMLParser {
           latex += this.__convertComplexPassageToLatex(content, children);
         }
       } else if (tag === 'UL') {
-        latex += this.__convertListToLatex(children, tag);
+        latex += this.__convertListToLatex(content, children, tag);
       } else if (tag === 'OL') {
-        latex += this.__convertListToLatex(children, tag);
+        latex += this.__convertListToLatex(content, children, tag);
       } else if (tag === 'TABLE') {
         latex += this.__convertTableToLatex(children);
       } else if (tag === 'PRE') {
@@ -125,30 +125,41 @@ class HTMLParser {
     return latex
   }
 
-  __convertListToLatex(children, tag) {
-    let latex = '';
-    let content = '';
-    if( tag === 'UL' ){
-      latex = '\\begin{itemize}\n';
-    } else if(tag === 'OL'){
-      latex = '\\begin{enumerate}\n';
-    }
+  __convertListToLatex(content, children, tag) {
+    let tex = '';
 
-    children.forEach((child) => {
-      content = child.content.replace().replace(/\[x\]/g, "[\\checkmark]");
-      content = content.replace(/\[ \]/g, "[$\\square$]");
-      latex += `\\item ${content}\n`;
-
-      if (child.children && child.children.length > 0) {
-        latex += this.__convertToLatex(child.children);
+    if (tag === 'LI') {
+      tex += '\\item ';
+      if (content && (typeof children) === undefined) {
+        content = content.trim().replace(/\[x\]/g, "[\\checkmark]");
+        content = content.trim().replace(/\[ \]/g, "[$\\square$]");
+        tex += content + '\n';
+      } else {
+        [content] = content.split('\n');
+        content = content.trim().replace(/\[x\]/g, "[\\checkmark]");
+        content = content.trim().replace(/\[ \]/g, "[$\\square$]");
+        tex += content + '\n'
       }
-    });
-    if( tag === 'UL' ){
-      latex += '\\end{itemize}\n';
-    } else if(tag === 'OL'){
-      latex += '\\end{enumerate}\n';
+      if (typeof children === undefined){}
+    } else if (tag === 'UL') {
+      tex += '\\begin{itemize}\n';
+    } else if (tag === 'OL') {
+      tex += '\\begin{enumerate}\n';
+    } 
+
+    if (children) {
+      for (let i = 0; i < children.length; i++) {
+        tex += this.__convertListToLatex(children[i].content, children[i].children, children[i].tag);
+      }
+      children.splice(0, children.length);
     }
-    return latex;
+
+    if (tag === 'UL') {
+      tex += '\\end{itemize}\n';
+    } else if (tag === 'OL') {
+      tex += '\\end{enumerate}\n';
+    }
+    return tex;
   }
 
   __convertTableToLatex(children) {
